@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+jar {
+    archiveFileName = "${project.name}-${project.version}.jar"
+    manifest {
+        attributes "Main-Class": "io.tn.core.Runner"
+    }
+}

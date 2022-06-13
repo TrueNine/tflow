@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "io.minio:minio"
+    runtimeOnly 'mysql:mysql-connector-java'
+}
+
+jar {
+    archiveFileName = "${project.name}-${project.version}.jar"
+    manifest {
+        attributes "Main-Class": "io.tn.oss.Runner"
+    }
+}

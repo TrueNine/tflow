@@ -1,0 +1,94 @@
+buildscript {
+    ext {
+        JavaSourceVersion = "17"
+        JavaCompileVersion = "17"
+        Encoding = "UTF-8"
+
+        SpringCloudVersion = "2022.0.0-M2"
+        SpringBootVersion = "3.0.0-SNAPSHOT"
+
+        MinioVersion = "8.4.1"
+        MybatisVersion = "2.2.2"
+        JunitVersion = "5.8.1"
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${SpringBootVersion}")
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version "${SpringBootVersion}"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+
+    group = 'io.tn'
+    version = '0.0.1-DEV'
+
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "${Encoding}"
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin/" }
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: "io.spring.dependency-management"
+
+    dependencyManagement {
+        dependencies {
+            dependency "io.minio:minio:${MinioVersion}"
+            dependency "org.mybatis.spring.boot:mybatis-spring-boot-starter:${MybatisVersion}"
+            dependency "org.junit.jupiter:junit-jupiter-api:${JunitVersion}"
+            dependency "org.junit.jupiter:junit-jupiter-engine:${JunitVersion}"
+        }
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${SpringCloudVersion}"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${SpringBootVersion}"
+        }
+    }
+
+    sourceCompatibility = "${JavaSourceVersion}"
+    targetCompatibility = "${JavaCompileVersion}"
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot'
+        implementation "org.springframework.boot:spring-boot-autoconfigure"
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        implementation 'org.springframework.cloud:spring-cloud-starter'
+
+        annotationProcessor 'org.projectlombok:lombok'
+        compileOnly 'org.projectlombok:lombok'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
