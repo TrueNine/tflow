@@ -1,6 +1,8 @@
 group 'io.tn'
 version '0.0.1-DEV'
 
+
 dependencies {
-    api('ognl:ognl:3.3.2')
+    api(project(":oss"))
 }
+

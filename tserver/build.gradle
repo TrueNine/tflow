@@ -1,59 +1,53 @@
-buildscript {
-    ext {
-        JavaSourceVersion = "17"
-        JavaCompileVersion = "17"
-        Encoding = "UTF-8"
-
-        SpringCloudVersion = "2022.0.0-M3"
-        SpringCloudAlibabaVersion = "2021.0.1.0"
-        SpringBootVersion = "3.0.0-M3"
-
-        SpringBootGraphQLVersion = "1.0.1"
-
-        MinioVersion = "8.4.1"
-        MybatisVersion = "2.2.2"
-        JunitVersion = "5.8.1"
-    }
-
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${SpringBootVersion}")
-    }
-}
-
 plugins {
+    id 'java'
+    id 'java-library'
+    id 'idea'
+    id "maven-publish"
+    id 'groovy-gradle-plugin'
     id 'org.springframework.boot' version "${SpringBootVersion}"
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
+bootJar.enabled = false
+jar.enabled = false
 
 allprojects {
-    apply plugin: "java"
-
     group = 'io.tn'
     version = '0.0.1-DEV'
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "${Encoding}"
-    }
 
     repositories {
         mavenLocal()
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://maven.aliyun.com/repository/gradle-plugin/" }
+        gradlePluginPortal()
+        mavenCentral()
         maven { url 'https://repo.spring.io/milestone' }
         maven { url 'https://repo.spring.io/snapshot' }
-        mavenCentral()
     }
 }
 
 subprojects {
+    apply plugin: "java"
+    apply plugin: "java-library"
+    apply plugin: "idea"
+    apply plugin: "org.springframework.boot"
     apply plugin: "io.spring.dependency-management"
+
+    sourceCompatibility = "${JavaCompileVersion}"
+    targetCompatibility = "${JavaSourceVersion}"
+
+    def defaultEncoding = 'UTF-8'
+    tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+
+    tasks.withType(AbstractCopyTask) {
+        setDuplicatesStrategy(DuplicatesStrategy.INCLUDE)
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
     dependencyManagement {
         dependencies {
@@ -63,6 +57,7 @@ subprojects {
             dependency "org.junit.jupiter:junit-jupiter-engine:${JunitVersion}"
             dependency "org.springframework.boot:spring-boot-starter-graphql:${SpringBootGraphQLVersion}"
         }
+
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${SpringCloudVersion}"
             mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${SpringCloudAlibabaVersion}"
@@ -70,32 +65,17 @@ subprojects {
         }
     }
 
-    sourceCompatibility = "${JavaSourceVersion}"
-    targetCompatibility = "${JavaCompileVersion}"
-
     dependencies {
-        implementation 'org.springframework.boot:spring-boot'
-        implementation "org.springframework.boot:spring-boot-autoconfigure"
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-        implementation 'org.springframework.cloud:spring-cloud-starter'
-        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+        annotationProcessor('org.springframework.boot:spring-boot-starter-actuator')
+        annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+        api 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
         annotationProcessor 'org.projectlombok:lombok'
-        compileOnly 'org.projectlombok:lombok'
-        testCompileOnly "org.projectlombok:lombok"
-
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'org.junit.jupiter:junit-jupiter-api'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     }
 
-    test {
-        useJUnitPlatform()
-    }
 
-    tasks.named('test') {
-        useJUnitPlatform()
-    }
+}
+
+wrapper {
+    gradleVersion("7.4.2")
 }

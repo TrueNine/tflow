@@ -1,6 +1,9 @@
 <template>
   <div class="bgimg">
-    <q-bar>Application</q-bar>
+    <q-toolbar class="shadow-2 bg-primary text-white">
+      <q-toolbar-title>Home By Data</q-toolbar-title>
+      <q-btn @click="closeWindow" color="negative" icon="close" />
+    </q-toolbar>
     <div class="logo-box">
       <img
         style="width: 12.5%; height: 12.5%"
@@ -14,24 +17,26 @@
       />
     </div>
     <div class="logo-box">
-      <h2>True_Nine 数据治理平台</h2>
+      <h2>TN 数据治理平台</h2>
     </div>
     <div class="logo-box">
-      <q-btn @click="toBe(`/doc`)" color="primary">MarkDown预览编辑器</q-btn>
-      <q-btn @click="toBe(`/new`)" color="green">新功能</q-btn>
-      <q-btn @click="toBe(`/actuator`)" color="orange">监控面板</q-btn>
-      <!-- 测试 -->
-      <div>
-        <q-input v-model="msg" />
-        <q-btn @click="sendMsg" color="primary">Send Message</q-btn>
-        <div
-          style="background-color: white"
-          v-for="(item, index) in megs"
-          :key="index"
-        >
-          {{ item }}
-        </div>
-      </div>
+      <q-btn-group>
+        <q-btn @click="toBe(`/doc`)" color="primary" icon="edit"
+          >MarkDown预览编辑器
+        </q-btn>
+        <q-btn @click="toBe(`/new`)" color="primary" icon="ion-logo-facebook"
+          >新功能
+        </q-btn>
+        <q-btn @click="toBe(`/actuator`)" color="primary" icon="terminal"
+          >监控面板
+        </q-btn>
+        <q-btn @click="fullScreen" color="primary" icon="fullscreen"
+          >进入全屏模式
+        </q-btn>
+      </q-btn-group>
+    </div>
+    <div class="shadow-14 glass-bg-box">
+      <h1>231222222222222</h1>
     </div>
   </div>
 </template>
@@ -44,8 +49,16 @@
   import axios from "axios";
   import { ref } from "vue";
 
-  const msg = ref<string>("");
   const megs = ref<string[]>([]);
+  const closeWindow = () => {
+    window.location.href = "about:blank";
+    window.close();
+    window.open("about:blank", "_self");
+  };
+
+  const fullScreen = () => {
+    document.documentElement.requestFullscreen();
+  };
 
   axios.get("http://localhost:8080/sub").then((d) => {
     console.log("ws 已触发订阅");
@@ -53,10 +66,6 @@
 
   const sock = new SockJs("http://localhost:8080/ws");
   const client = Stomp.over(sock);
-
-  const sendMsg = () => {
-    client.send("/sendToTopic", {}, msg.value);
-  };
 
   client.connect(
     {},
@@ -98,5 +107,14 @@
     align-items: center;
 
     font-weight: bold;
+  }
+
+  .glass-bg-box {
+    width: 50vw;
+    display: flex;
+    justify-content: center;
+
+    backdrop-filter: blur(10px);
+    box-shadow: #1d1d1d;
   }
 </style>

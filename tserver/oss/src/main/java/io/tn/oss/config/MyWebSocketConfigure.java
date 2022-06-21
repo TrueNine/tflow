@@ -28,8 +28,7 @@ public class MyWebSocketConfigure implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry
-                .enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic");
     }
 
     private static class inter implements HandshakeInterceptor {

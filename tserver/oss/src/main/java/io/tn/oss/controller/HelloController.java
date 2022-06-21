@@ -1,6 +1,7 @@
 package io.tn.oss.controller;
 
 
+import io.minio.MinioClient;
 import io.tn.core.Optimization;
 import io.tn.core.res.BizRes;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +21,11 @@ import java.util.Map;
 @CrossOrigin
 @RequestMapping("")
 public class HelloController {
+
+    public static MinioClient as() {
+        return MinioClient.builder().build();
+    }
+
     @GetMapping("t")
     @ResponseBody
     Object ac() {
