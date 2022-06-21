@@ -4,8 +4,11 @@ buildscript {
         JavaCompileVersion = "17"
         Encoding = "UTF-8"
 
-        SpringCloudVersion = "2022.0.0-M2"
-        SpringBootVersion = "3.0.0-SNAPSHOT"
+        SpringCloudVersion = "2022.0.0-M3"
+        SpringCloudAlibabaVersion = "2021.0.1.0"
+        SpringBootVersion = "3.0.0-M3"
+
+        SpringBootGraphQLVersion = "1.0.1"
 
         MinioVersion = "8.4.1"
         MybatisVersion = "2.2.2"
@@ -35,7 +38,6 @@ allprojects {
     group = 'io.tn'
     version = '0.0.1-DEV'
 
-
     tasks.withType(JavaCompile) {
         options.encoding = "${Encoding}"
     }
@@ -59,9 +61,11 @@ subprojects {
             dependency "org.mybatis.spring.boot:mybatis-spring-boot-starter:${MybatisVersion}"
             dependency "org.junit.jupiter:junit-jupiter-api:${JunitVersion}"
             dependency "org.junit.jupiter:junit-jupiter-engine:${JunitVersion}"
+            dependency "org.springframework.boot:spring-boot-starter-graphql:${SpringBootGraphQLVersion}"
         }
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${SpringCloudVersion}"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${SpringCloudAlibabaVersion}"
             mavenBom "org.springframework.boot:spring-boot-dependencies:${SpringBootVersion}"
         }
     }
@@ -72,12 +76,15 @@ subprojects {
     dependencies {
         implementation 'org.springframework.boot:spring-boot'
         implementation "org.springframework.boot:spring-boot-autoconfigure"
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
         implementation 'org.springframework.cloud:spring-cloud-starter'
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
         annotationProcessor 'org.projectlombok:lombok'
         compileOnly 'org.projectlombok:lombok'
+        testCompileOnly "org.projectlombok:lombok"
 
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.junit.jupiter:junit-jupiter-api'

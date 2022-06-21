@@ -1,11 +1,18 @@
 plugins {
+    id 'org.springframework.boot' version "${SpringBootVersion}"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation project(":core")
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-websocket"
     implementation "io.minio:minio"
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation "org.springframework.cloud:spring-cloud-starter-loadbalancer"
     runtimeOnly 'mysql:mysql-connector-java'
 }
 

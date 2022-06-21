@@ -10,6 +10,6 @@ pluginManagement {
 }
 
 rootProject.name = 'tserver'
-include("oss")
+include "oss"
 include 'core'
 

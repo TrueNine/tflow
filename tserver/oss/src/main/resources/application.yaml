@@ -4,3 +4,12 @@ spring:
     suffix: .ftlh
     charset: UTF-8
     template-loader-path: classpath:/templates/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "*" ]
+      cors:
+        allowed-origins: [ "*" ]
+        allowed-methods: [ "*" ]
